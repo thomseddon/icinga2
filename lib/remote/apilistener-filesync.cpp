@@ -400,7 +400,7 @@ void ApiListener::AsyncTryActivateZonesStage(const String& stageConfigDir, const
 		"daemon",
 		"--validate",
 		"--define",
-		"ZonesDir=" + GetApiZonesStageDir()
+		"System.IgnoreZonesVarDir=true"
 	});
 
 	Process::Ptr process = new Process(Process::PrepareCommand(args));
