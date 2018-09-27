@@ -405,7 +405,7 @@ void ApiListener::AsyncTryActivateZonesStage(const String& stageConfigDir, const
 		"daemon",
 		"--validate",
 		"--define",
-		"System.IgnoreZonesVarDir=true"
+		"System.ZonesStageVarDir='" + GetApiZonesStageDir() + "'" //Path is written onto the shell
 	});
 
 	Process::Ptr process = new Process(Process::PrepareCommand(args));
