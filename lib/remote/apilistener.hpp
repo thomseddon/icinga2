@@ -31,6 +31,7 @@
 #include "base/tcpsocket.hpp"
 #include "base/tlsstream.hpp"
 #include "base/threadpool.hpp"
+#include "base/process.hpp"
 #include <set>
 
 namespace icinga
@@ -61,6 +62,8 @@ public:
 	ApiListener();
 
 	static String GetApiDir();
+	static String GetApiZonesDir();
+	static String GetApiZonesStageDir();
 	static String GetCertsDir();
 	static String GetCaDir();
 	static String GetCertificateRequestsDir();
@@ -177,13 +180,20 @@ private:
 	/* filesync */
 	static ConfigDirInformation LoadConfigDir(const String& dir);
 	static Dictionary::Ptr MergeConfigUpdate(const ConfigDirInformation& config);
-	static bool UpdateConfigDir(const ConfigDirInformation& oldConfig, const ConfigDirInformation& newConfig, const String& configDir, bool authoritative);
+	static bool UpdateConfigDir(const ConfigDirInformation& oldConfigInfo, const ConfigDirInformation& newConfigInfo,
+		const String& configDir, const String& zoneName, std::vector<String>& relativePaths, bool authoritative);
 
 	void SyncZoneDirs() const;
 	void SyncZoneDir(const Zone::Ptr& zone) const;
 
 	static void ConfigGlobHandler(ConfigDirInformation& config, const String& path, const String& file);
 	void SendConfigUpdate(const JsonRpcConnection::Ptr& aclient);
+
+	static void TryActivateZonesStageCallback(const ProcessResult& pr,
+		const String& stageConfigDir, const String& currentConfigDir,
+		const std::vector<String>& relativePaths, bool reload);
+	static void AsyncTryActivateZonesStage(const String& stageConfigDir, const String& currentConfigDir,
+		const std::vector<String>& relativePaths, bool reload);
 
 	/* configsync */
 	void UpdateConfigObject(const ConfigObject::Ptr& object, const MessageOrigin::Ptr& origin,
