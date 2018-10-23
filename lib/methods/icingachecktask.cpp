@@ -25,6 +25,7 @@
 #include "icinga/icingaapplication.hpp"
 #include "icinga/clusterevents.hpp"
 #include "icinga/checkable.hpp"
+#include "remote/apilistener.hpp"
 #include "base/application.hpp"
 #include "base/objectlock.hpp"
 #include "base/utility.hpp"
@@ -172,6 +173,20 @@ void IcingaCheckTask::ScriptFunc(const Checkable::Ptr& checkable, const CheckRes
 	if (lastReloadFailed > 0) {
 		output += "; Last reload attempt failed at " + Utility::FormatDateTime("%Y-%m-%d %H:%M:%S %z", lastReloadFailed);
 		cr->SetState(ServiceWarning);
+	}
+
+	/* Indicate a warning when the last synced config caused a stage validation error. */
+	ApiListener::Ptr listener = ApiListener::GetInstance();
+
+	if (listener) {
+		Dictionary::Ptr validationResult = listener->GetLastFailedZonesStageValidation();
+
+		if (validationResult) {
+			output += "; Last zone sync stage validation failed at "
+				+ Utility::FormatDateTime("%Y-%m-%d %H:%M:%S %z", validationResult->Get("ts"));
+
+			cr->SetState(ServiceWarning);
+		}
 	}
 
 	/* Return an error if the version is less than specified (optional). */
