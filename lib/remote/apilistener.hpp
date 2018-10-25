@@ -185,8 +185,6 @@ private:
 	void SendConfigUpdate(const JsonRpcConnection::Ptr& aclient);
 
 	static Dictionary::Ptr MergeConfigUpdate(const ConfigDirInformation& config);
-	static bool UpdateConfigDir(const ConfigDirInformation& oldConfigInfo, const ConfigDirInformation& newConfigInfo,
-		const String& configDir, const String& zoneName, std::vector<String>& relativePaths, bool authoritative);
 
 	static ConfigDirInformation LoadConfigDir(const String& dir);
 	static void ConfigGlobHandler(ConfigDirInformation& config, const String& path, const String& file);
@@ -196,6 +194,7 @@ private:
 	static void AsyncTryActivateZonesStage(const std::vector<String>& relativePaths);
 
 	static String GetChecksum(const String& content);
+	static String GetGlobalChecksum(const ConfigDirInformation& config);
 
 	void UpdateLastFailedZonesStageValidation(const String& log);
 	void ClearLastFailedZonesStageValidation();
