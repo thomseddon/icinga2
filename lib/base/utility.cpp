@@ -808,6 +808,9 @@ void Utility::CopyFile(const String& source, const String& target)
 	std::ofstream ofs(target.CStr(), std::ios::binary | std::ios::trunc);
 
 	ofs << ifs.rdbuf();
+
+	ifs.close();
+	ofs.close();
 }
 
 /*
