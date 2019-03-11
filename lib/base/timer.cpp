@@ -329,6 +329,6 @@ void Timer::TimerThreadProc()
 		lock.unlock();
 
 		/* Asynchronously call the timer. */
-		Utility::QueueAsyncCallback(std::bind(&Timer::Call, ptimer));
+		Utility::QueueAsyncCallback([ptimer]() { ptimer->Call(); });
 	}
 }
